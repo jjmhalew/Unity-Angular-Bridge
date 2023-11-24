@@ -13,7 +13,7 @@ using UnityEngine;
 namespace Assets.UnityAngularBridge.SwaggerAttribute
 {
     /// <summary>
-    /// Export DllImportAttribute Methods to TypeScript as some type of SwaggerClient to MyDocuments folder.
+    /// Export DllImportAttribute Methods to TypeScript as some type of SwaggerClient to Plugins folder.
     /// An example output is in the same directory as this file, referring to unity-jslib-exported.service.ts
     /// .
     /// NOTE: this method is from unity webinteractions lib, meaning it is JavaScript.
@@ -24,7 +24,6 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
     /// otherwise it will not be recognized by JSLibExport logic.
     /// .
     /// TODO: export JSLibClient file to frontend by placing this in a NPM package.
-    /// TODO: add tabs correctly -> Use IndentedTextWriter.
     /// </summary>
     [InitializeOnLoad]
     public class JSLibExport : MonoBehaviour
@@ -53,33 +52,26 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         private static void GenerateJSLib()
         {
             // Lines to write to file
-            List<string> lines = new()
-            {
-                AddJsLibMergeIntoLine(),
-            };
-            lines.AddRange(AddJSLibMethodLines());
-            lines.Add(AddJsLibClosingBracketsLine());
-            WriteLinesToFile(lines, _jsLibFileName);
+            using IndentedTextWriter writer = new(new StreamWriter(Path.Combine(GetPluginsPath(), _jsLibFileName)) { AutoFlush = true }, _tabString);
+            AddJsLibMergeIntoLine(writer);
+            AddJSLibMethodLines(writer);
+            AddJsLibClosingBracketsLine(writer);
         }
 
         /// <summary>
         /// Adds "mergeInto(LibraryManager.library, {".
         /// </summary>
-        /// <returns>First line of JSLib file.</returns>
-        private static string AddJsLibMergeIntoLine()
+        private static void AddJsLibMergeIntoLine(IndentedTextWriter writer)
         {
-            string mergeIntoLine = "mergeInto(LibraryManager.library, {";
-            return mergeIntoLine;
+            writer.WriteLine("mergeInto(LibraryManager.library, {");
+            writer.Indent++;
         }
 
         /// <summary>
         /// Adds all JavaScript method lines.
         /// </summary>
-        /// <returns>JS method lines.</returns>
-        private static List<string> AddJSLibMethodLines()
+        private static void AddJSLibMethodLines(IndentedTextWriter writer)
         {
-            List<string> lines = new();
-
             // Get Assembly
             Assembly assembly = Assembly.GetExecutingAssembly();
             // Get Classes Types
@@ -132,11 +124,9 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
                     // Add JsLibExportService variable data
                     _jSLibVariables.Add(jslibVariable);
 
-                    lines.AddRange(AddJSLibMethodLines(methodName, parameterName));
+                    AddJSLibMethodLines(writer, methodName, parameterName);
                 }
             }
-
-            return lines;
         }
 
         /// <summary>
@@ -146,50 +136,44 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         /// </summary>
         /// <param name="methodName">Method name.</param>
         /// <param name="parameterName">Parameter name.</param>
-        private static string[] AddJSLibMethodLines(string methodName, string? parameterName)
+        private static void AddJSLibMethodLines(IndentedTextWriter writer, string methodName, string? parameterName)
         {
             // Add Accessibility modifier and MethodName and first parameter
-            string topLine = $"  {methodName}: function ({parameterName}, size";
+            string topLine = $"{methodName}: function ({parameterName}, size";
 
             // TODO: add support for multiple params
 
             // Close parameter brackets
             topLine += ") {";
+            writer.WriteLine(topLine);
 
             // Add UnityInstance SendMessage logic with whitespace as tab
-            string secondLine = $"    window.{FirstCharToLowerCase(methodName)}FromUnity(UTF8ToString({parameterName}));";
+            writer.Indent++;
+            writer.WriteLine($"window.{FirstCharToLowerCase(methodName)}FromUnity(UTF8ToString({parameterName}));");
+            writer.Indent--;
 
             // TODO: support for multiple parameter passing(?)
 
             // Add closing bracket
-            string endLine = "  },";
-
-            string[] lines = { topLine, secondLine, endLine, string.Empty /* for newline */ };
-
-            return lines;
+            writer.WriteLine("},");
+            writer.WriteLine();
         }
 
         /// <summary>
-        /// Adds "});".
+        /// Adds end of file "});".
         /// </summary>
-        /// <returns>Last line of JSLib file.</returns>
-        private static string AddJsLibClosingBracketsLine()
+        private static void AddJsLibClosingBracketsLine(IndentedTextWriter writer)
         {
-            string closeBracketsLine = "});";
-            return closeBracketsLine;
+            writer.Indent--;
+            writer.WriteLine("});");
         }
         #endregion
 
         #region GenerateJSLibClient
         private static void GenerateJSLibClient()
         {
-            // Get the path of the Game data folder
-            // Unity Editor: <path to project folder>/Assets
-            // https://docs.unity3d.com/ScriptReference/Application-dataPath.html
-            string outputPath = Application.dataPath + "/Plugins";
-
             // Lines to write to file
-            using IndentedTextWriter writer = new(new StreamWriter(Path.Combine(outputPath, _jsLibClientFileName)) { AutoFlush = true }, _tabString);
+            using IndentedTextWriter writer = new(new StreamWriter(Path.Combine(GetPluginsPath(), _jsLibClientFileName)) { AutoFlush = true }, _tabString);
             AddAutoGeneratedFileCommentLines(writer);
             AddImportLines(writer);
             AddGlobalSubjectVariablesLines(writer);
@@ -438,28 +422,18 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         }
         #endregion
 
-        #region FileWriteUtilities
+        #region pathUtilities
 
         /// <summary>
-        /// Write lines to file.
+        /// Get plugins path.
         /// </summary>
-        /// <param name="lines">file lines to write.</param>
-        /// <param name="fileName">file name including extension.</param>
-        private static void WriteLinesToFile(List<string> lines, string fileName)
+        /// <returns>Plugins path.</returns>
+        private static string GetPluginsPath()
         {
             // Get the path of the Game data folder
             // Unity Editor: <path to project folder>/Assets
             // https://docs.unity3d.com/ScriptReference/Application-dataPath.html
-            string outputPath = Application.dataPath + "/Plugins";
-
-            // Write the string array to a new file with fileName
-            using (StreamWriter outputFile = new(Path.Combine(outputPath, fileName)))
-            {
-                foreach (string line in lines)
-                {
-                    outputFile.WriteLine(line);
-                }
-            }
+            return Application.dataPath + "/Plugins";
         }
         #endregion
 
