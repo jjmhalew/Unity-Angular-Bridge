@@ -1,6 +1,9 @@
 # Unity-Angular-Bridge
 A simplified way to communicate between Unity and Angular
 
+# Calling Unity from Angular
+TODO: Rework before committing to this repository - it currently has too many instabilities.
+
 # Subscribing to Unity events from Angular with JsLib
 ## How to use
 1. Use a `MonoBehaviour` class. Only `string` as `parameter` is accepted.
@@ -20,7 +23,7 @@ public void MyMethod()
   #endif
 }
 ```
-2. Run play to generate file.
+2. Run play to let `JSLibExport.cs` generate a file.
 3. In a Angular component, you can subscribe to this method by importing `UnityJSLibExportedService`.
 ```ts
 constructor(private unityJslibExportedService: UnityJSLibExportedService) {
