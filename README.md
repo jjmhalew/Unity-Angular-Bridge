@@ -1,7 +1,7 @@
 # Unity-Angular-Bridge
 A simplified way to communicate between Unity and Angular
 
-# Calling Unity from Angular with JsLib
+# Subscribing to Unity events from Angular with JsLib
 ## How to use
 1. Use a `MonoBehaviour` class. Only `string` as `parameter` is accepted.
 Since you can only send one string technically, there is an option to add the attribute `[StringArrayAttribute]` -> this will make the service split a string into an array by `"|"`.
