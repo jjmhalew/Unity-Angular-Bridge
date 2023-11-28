@@ -13,13 +13,13 @@ Since you can only send one string technically, there is an option to add the at
 /// My documentation.
 /// </summary>
 [DllImport("__Internal")]
-private static extern void SendViewerIsLoadingToWeb(string loading);
+private static extern void SendObjectsToWeb(string loading);
 
 public void MyMethod()
 {
   string myString = "value";
   #if PLATFORM_WEBGL && !UNITY_EDITOR // otherwise crash
-    SendViewerIsLoadingToWeb(myString);
+    SendObjectsToWeb(myString);
   #endif
 }
 ```
@@ -27,7 +27,7 @@ public void MyMethod()
 3. In a Angular component, you can subscribe to this method by importing `UnityJSLibExportedService`.
 ```ts
 constructor(private unityJslibExportedService: UnityJSLibExportedService) {
-  this.unityJslibExportedService.viewerIsLoading$.pipe().subscribe((value) => {
+  this.unityJslibExportedService.objects$.pipe().subscribe((value) => {
     console.log(value);
   });
 }
@@ -47,4 +47,21 @@ Both will be placed in the folder `Assets/Plugins`.
 4. Support callbacks, see https://jmschrack.dev/posts/UnityWebGL/
 5. ~~Create a custom wrapping attribute to simplify usage (Not possible due to sealed attribute)~~  
   ~~- It does not seem possible to extend the `DLLImport`-attribute so `StringArray` could be a parameter instead in a custom wrapping attribute for simplicity reasons.~~  
-  ~~- If so, also add parameter which says which editor type this is for (so all listeners can be organized)~~
+  ~~- If so, also add parameter which says which category type/scene this belongs to (so all listeners can be organized)~~
+```csharp
+public class JSLibExportAttribute : DllImportAttribute
+{
+  public bool IsStringArray { get; set; }
+  public string Category { get; set; }
+
+  public JSLibExportAttribute(bool isStringArray = false, string category = "") {
+    IsStringArray = isStringArray;
+    Category = category;
+  }
+}
+```
+To then be used as
+```csharp
+[JSLibExportAttribute(IsStringArray, Category = "Core")]
+private static extern void SendObjectsToWeb(string loading);
+```
