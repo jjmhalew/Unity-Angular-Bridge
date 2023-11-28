@@ -12,6 +12,7 @@ using UnityEngine;
 
 namespace Assets.UnityAngularBridge.SwaggerAttribute
 {
+#if UNITY_EDITOR
     /// <summary>
     /// Export DllImportAttribute Methods to TypeScript as some type of SwaggerClient to Plugins folder.
     /// An example output is in the same directory as this file, referring to unity-jslib-exported.service.ts
@@ -70,6 +71,7 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         /// <summary>
         /// Adds all JavaScript method lines.
         /// </summary>
+        /// TODO: multi parameter support?
         private static void AddJSLibMethodLines(IndentedTextWriter writer)
         {
             // Get Assembly
@@ -96,11 +98,11 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
                     ParameterInfo[] parameters = methodInfo.GetParameters();
                     if (parameters.Length > 1)
                     {
-                        throw new InvalidOperationException($"Method {methodName} is only allowed to have 1 argument"); // TODO: multi parameter support.
+                        throw new InvalidOperationException($"Method {methodName} is only allowed to have 1 argument");
                     }
                     if (parameters.Length == 1)
                     {
-                        ////parameterType = ParameterTypeToTypescriptType(parameters[0].ParameterType);
+                        // parameterType = ParameterTypeToTypescriptType(parameters[0].ParameterType);
                         parameterName = parameters[0].Name;
                         jslibVariable.ParameterName = parameterName;
                         jslibVariable.ReturnType = ReturnType.String;
@@ -136,27 +138,29 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         /// </summary>
         /// <param name="methodName">Method name.</param>
         /// <param name="parameterName">Parameter name.</param>
+        /// TODO: add support for multiple params?
         private static void AddJSLibMethodLines(IndentedTextWriter writer, string methodName, string? parameterName)
         {
-            // Add Accessibility modifier and MethodName and first parameter
-            string topLine = $"{methodName}: function ({parameterName}, size";
-
-            // TODO: add support for multiple params
-
-            // Close parameter brackets
-            topLine += ") {";
-            writer.WriteLine(topLine);
-
-            // Add UnityInstance SendMessage logic with whitespace as tab
-            writer.Indent++;
-            writer.WriteLine($"window.{FirstCharToLowerCase(methodName)}FromUnity(UTF8ToString({parameterName}));");
-            writer.Indent--;
-
-            // TODO: support for multiple parameter passing(?)
-
-            // Add closing bracket
-            writer.WriteLine("},");
-            writer.WriteLine();
+            // If no parameters
+            if (string.IsNullOrEmpty(parameterName))
+            {
+                writer.WriteLine($"{methodName}: function ()" + " {");
+                writer.Indent++;
+                writer.WriteLine($"window.{FirstCharToLowerCase(methodName)}FromUnity();");
+                writer.Indent--;
+                writer.WriteLine("},");
+                writer.WriteLine();
+            }
+            else // Has 1 parameter
+            {
+                // Add Accessibility modifier and MethodName and first parameter
+                writer.WriteLine($"{methodName}: function ({parameterName}, size)" + " {");
+                writer.Indent++;
+                writer.WriteLine($"window.{FirstCharToLowerCase(methodName)}FromUnity(UTF8ToString({parameterName}));");
+                writer.Indent--;
+                writer.WriteLine("},");
+                writer.WriteLine();
+            }
         }
 
         /// <summary>
@@ -449,4 +453,5 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         }
         #endregion
     }
+#endif
 }
