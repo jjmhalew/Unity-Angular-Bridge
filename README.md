@@ -23,7 +23,7 @@ public void MyMethod()
   #endif
 }
 ```
-2. Run play to let `JSLibExport.cs` generate a file.
+2. Recompile or run play to let `JSLibExport.cs` generate a file.
 3. In a Angular component, you can subscribe to this method by importing `UnityJSLibExportedService`.
 ```ts
 constructor(private unityJslibExportedService: UnityJSLibExportedService) {
@@ -34,7 +34,7 @@ constructor(private unityJslibExportedService: UnityJSLibExportedService) {
 ```
 
 ## How to update
-Just click on 'Play' in Unity editor to trigger `JSLibExport.cs` class.  
+Recompile or click on 'Play' in Unity editor to trigger `JSLibExport.cs` class.  
 This will automatically generate:
 1. `BrowserInteractions.jslib` The bridge between calling C# methods from JavaScript
 2. `unity-jslib-exported.service.ts` A strongly typed service to function-call from Angular to Unity.  
