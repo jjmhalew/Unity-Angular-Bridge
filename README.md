@@ -36,7 +36,7 @@ constructor(private unityJslibExportedService: UnityJSLibExportedService) {
 ## How to update
 Just click on 'Play' in Unity editor to trigger `JSLibExport.cs` class.  
 This will automatically generate:
-1. `BrowserInterations.jslib` The bridge between calling C# methods from JavaScript
+1. `BrowserInteractions.jslib` The bridge between calling C# methods from JavaScript
 2. `unity-jslib-exported.service.ts` A strongly typed service to function-call from Angular to Unity.  
 Both will be placed in the folder `Assets/Plugins`.  
  
