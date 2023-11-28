@@ -13,7 +13,7 @@ Since you can only send one string technically, there is an option to add the at
 /// My documentation.
 /// </summary>
 [DllImport("__Internal")]
-private static extern void SendObjectsToWeb(string loading);
+private static extern void SendObjectsToWeb(string objectIds);
 
 public void MyMethod()
 {
@@ -62,5 +62,5 @@ public class JSLibExportAttribute : DllImportAttribute
 To then be used as
 ```csharp
 [JSLibExportAttribute(IsStringArray, Category = "Core")]
-private static extern void SendObjectsToWeb(string loading);
+private static extern void SendObjectsToWeb(string objectIds);
 ```
