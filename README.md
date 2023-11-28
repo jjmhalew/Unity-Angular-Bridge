@@ -41,11 +41,10 @@ This will automatically generate:
 Both will be placed in the folder `Assets/Plugins`.  
  
 **TODO:**
-1. Currently the .jslib file generation always assumes there is a string parameter.
-2. The .ts generation does not set documentation of methods in ts yet.
-3. The .ts should automatically be placed in a ClientApp folder (via npm package).
-4. Support callbacks, see https://jmschrack.dev/posts/UnityWebGL/
-5. ~~Create a custom wrapping attribute to simplify usage (Not possible due to sealed attribute)~~  
+1. The .ts generation does not set documentation of methods in ts yet.
+2. The .ts should automatically be placed in a ClientApp folder (via npm package).
+3. Support callbacks, see https://jmschrack.dev/posts/UnityWebGL/
+4. ~~Create a custom wrapping attribute to simplify usage (Not possible due to sealed attribute)~~  
   ~~- It does not seem possible to extend the `DLLImport`-attribute so `StringArray` could be a parameter instead in a custom wrapping attribute for simplicity reasons.~~  
   ~~- If so, also add parameter which says which category type/scene this belongs to (so all listeners can be organized)~~
 ```csharp
