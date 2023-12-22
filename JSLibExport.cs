@@ -27,7 +27,7 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
     /// TODO: export JSLibClient file to frontend by placing this in a NPM package.
     /// </summary>
     [InitializeOnLoad]
-    public class JSLibExport : MonoBehaviour
+    public class JSLibExport
     {
         private static readonly string _jsLibFileName = "BrowserInteractions.jslib";
         private static readonly string _jsLibClientFileName = "unity-jslib-exported.service.ts";
