@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 
-namespace SmartTwinEditor.SwaggerAttribute
+namespace UnityAngularBridge.SwaggerAttribute
 {
 #if UNITY_EDITOR
     /// <summary>
