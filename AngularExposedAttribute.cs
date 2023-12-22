@@ -1,6 +1,6 @@
 using System;
 
-namespace SmartTwinEditor.SwaggerAttribute
+namespace UnityAngularBridge.SwaggerAttribute
 {
     /// <summary>
     /// This attribute will expose marked Method for Angular as a type of SwaggerClient.
