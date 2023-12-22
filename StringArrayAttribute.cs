@@ -1,6 +1,6 @@
 using System;
 
-namespace Assets.Unity-Angular-Bridge.SwaggerAttribute
+namespace Assets.UnityAngularBridge.SwaggerAttribute
 {
     /// <summary>
     /// Converts string parameter to array in JSLibExport.
