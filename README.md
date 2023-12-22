@@ -2,8 +2,31 @@
 A simplified way to communicate between Unity and Angular
 
 # Calling Unity from Angular
-TODO: Rework before committing to this repository - it currently has too many instabilities.
+## How to use
+1. Use a `MonoBehaviour` class. Only `string`,`number` are as `parameters` accepted. Only 1 parameter is allowed maximum. It will output `UnityClient.ts` to your `/Documents` folder.  
+```csharp
+/// <summary>
+/// My documentation.
+/// </summary>
+[AngularExposed(gameObjectName: "MyGameObjectName")] // default gameObjectName value is Angular.
+public void MyMethod(string myJsonObject)
+{
+  // Logic to parse myJsonObject and manipulate it
+}
+```
 
+**Note**: This cannot be generated at runtime, only at start of application. However, we decided not to support this. Instead a default GameObject name will be used, which can be overridden in the `[AngularExposed]`-attribute we want the name of the GameObjects containing a script with the `[AngularExposed]`-attribute. Ohterwise it cannot support multiple scenes, since it would look at the active scene to generate GameObjects at runtime, which would empty the UnityClient file each time.  
+
+## How to update
+Recompile or click on 'Play' in Unity editor to trigger Jim's `AngularExposedExport.cs` class.  
+This will automatically generate:  
+1. `UnityClient.ts` The bridge between calling C# methods from JavaScript  
+It will be placed in the special system folder `MyDocuments`.  
+
+**TODO:**
+1. The .ts generation does not set documentation of methods in ts yet.
+2. Export onBuild these generated files to a npm package and fetch it from that.  
+3. Optionally, let Typescript enter the GameObject names?
 # Subscribing to Unity events from Angular with JsLib
 ## How to use
 1. Use a `MonoBehaviour` class. Only `string` as `parameter` is accepted.
@@ -36,7 +59,7 @@ constructor(private unityJslibExportedService: UnityJSLibExportedService) {
 ## How to update
 Recompile or click on 'Play' in Unity editor to trigger `JSLibExport.cs` class.  
 This will automatically generate:
-1. `BrowserInteractions.jslib` The bridge between calling C# methods from JavaScript
+1. `BrowserInteractions.jslib` The bridge between listening to C# methods from JavaScript
 2. `unity-jslib-exported.service.ts` A strongly typed service to function-call from Angular to Unity.  
 Both will be placed in the folder `Assets/Plugins`.  
  
