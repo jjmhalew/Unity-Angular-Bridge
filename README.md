@@ -18,7 +18,7 @@ public void MyMethod(string myJsonObject)
 **Note**: This cannot be generated at runtime, only at start of application. However, we decided not to support this. Instead a default GameObject name will be used, which can be overridden in the `[AngularExposed]`-attribute we want the name of the GameObjects containing a script with the `[AngularExposed]`-attribute. Ohterwise it cannot support multiple scenes, since it would look at the active scene to generate GameObjects at runtime, which would empty the UnityClient file each time.  
 
 ## How to update
-Recompile or click on 'Play' in Unity editor to trigger Jim's `AngularExposedExport.cs` class.  
+Recompile or click on 'Play' in Unity editor to trigger `AngularExposedExport.cs` class.  
 This will automatically generate:  
 1. `UnityClient.ts` The bridge between calling C# methods from JavaScript  
 It will be placed in the special system folder `MyDocuments`.  
