@@ -1,4 +1,5 @@
 #nullable enable
+#if UNITY_EDITOR
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using UnityEngine;
 
 namespace Assets.UnityAngularBridge.SwaggerAttribute
 {
-#if UNITY_EDITOR
     /// <summary>
     /// Export DllImportAttribute Methods to TypeScript as some type of SwaggerClient to Plugins folder.
     /// An example output is in the same directory as this file, referring to unity-jslib-exported.service.ts
@@ -453,5 +453,5 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
         }
         #endregion
     }
-#endif
 }
+#endif
