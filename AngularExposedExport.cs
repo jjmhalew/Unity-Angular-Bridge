@@ -1,4 +1,5 @@
 #nullable enable
+#if UNITY_EDITOR
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ using UnityEditor;
 
 namespace UnityAngularBridge.SwaggerAttribute
 {
-#if UNITY_EDITOR
     /// <summary>
     /// Export AngularExposed Methods to TypeScript as some type of SwaggerClient to MyDocuments folder.
     /// This to mostly call SendMessage() methods of Unity with different parameter values,
