@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   unity-build:
     name: Unity WebGL Build
@@ -67,4 +70,4 @@ jobs:
 
       - name: Test
         working-directory: example/angular-unity-example
-        run: npx ng test
+        run: npx ng test --watch=false
