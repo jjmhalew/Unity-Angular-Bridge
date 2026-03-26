@@ -437,7 +437,12 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute
             // Get the path of the Game data folder
             // Unity Editor: <path to project folder>/Assets
             // https://docs.unity3d.com/ScriptReference/Application-dataPath.html
-            return Application.dataPath + "/Plugins";
+            string path = Application.dataPath + "/Plugins";
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            return path;
         }
         #endregion
 
