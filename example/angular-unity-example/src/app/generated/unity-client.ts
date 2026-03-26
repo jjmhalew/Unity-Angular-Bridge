@@ -7,6 +7,9 @@
 /* eslint-disable */
 
 import { Injectable } from "@angular/core";
+import type { IUnityInstance } from "ngx-unity";
+
+export type { IUnityInstance };
 
 @Injectable()
 export class UnityClient {
@@ -29,10 +32,4 @@ export class UnityClient {
   public sceneManager_ResetScene(unityInstance: IUnityInstance): void {
     unityInstance?.SendMessage("SceneManager", "ResetScene");
   }
-}
-
-export interface IUnityInstance {
-  SendMessage(gameObjectName: string, methodName: string, data?: unknown): void;
-  SetFullscreen(value: number): void;
-  Quit(): Promise<unknown>;
 }

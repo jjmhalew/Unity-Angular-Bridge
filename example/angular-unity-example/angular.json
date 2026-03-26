@@ -49,9 +49,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ]
+            "styles": ["src/styles.css"]
           },
           "configurations": {
             "production": {
@@ -88,6 +86,32 @@
             }
           },
           "defaultConfiguration": "development"
+        }
+      }
+    },
+    "ngx-unity": {
+      "projectType": "library",
+      "root": "projects/ngx-unity",
+      "sourceRoot": "projects/ngx-unity/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-unity/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-unity/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/ngx-unity/tsconfig.spec.json"
+          }
         }
       }
     }

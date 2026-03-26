@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { UnityClient, IUnityInstance } from '../generated/unity-client';
+import type { IUnityInstance } from 'ngx-unity';
+import { UnityClient } from '../generated/unity-client';
 import { UnityJSLibExportedService } from '../generated/unity-jslib-exported.service';
 
 /**

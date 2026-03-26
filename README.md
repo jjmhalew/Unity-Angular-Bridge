@@ -1,6 +1,13 @@
-# Unity-Angular-Bridge
+# ngx-unity
 
-A simplified, type-safe bridge for bidirectional communication between Unity WebGL and Angular.
+A type-safe bridge for bidirectional communication between Unity WebGL and Angular.
+
+This project has two parts:
+
+| Package | Distribution | Contents |
+|---|---|---|
+| **`ngx-unity`** | Angular library (npm) | Reusable viewport component, `IUnityInstance` type, mock utilities |
+| **Unity C# scripts** | Copy to `Assets/` | Attributes, TypeScript code generators, editor settings |
 
 ## Features
 
@@ -10,6 +17,7 @@ A simplified, type-safe bridge for bidirectional communication between Unity Web
 - **TSDoc Generation**: C# XML documentation automatically appears in generated TypeScript
 - **Custom Attributes**: `[AngularExposed]` and `[JSLibExport]` for clean, declarative setup
 - **Configurable Output**: Control where generated files are placed via Editor settings
+- **`<ngx-unity-viewport>`**: Ready-to-use component that loads Unity WebGL with automatic mock fallback
 
 ## Requirements
 
@@ -46,7 +54,27 @@ A simplified, type-safe bridge for bidirectional communication between Unity Web
    };
    ```
 
-3. Inject `UnityJSLibExportedService` wherever you need Unity events:
+3. Use the `<ngx-unity-viewport>` component to embed Unity:
+   ```typescript
+   import { NgxUnityViewport, type IUnityInstance } from 'ngx-unity';
+
+   @Component({
+     imports: [NgxUnityViewport],
+     template: `
+       <ngx-unity-viewport
+         buildPath="unity"
+         height="500px"
+         (instanceReady)="onUnityReady($event)" />
+     `,
+   })
+   export class MyComponent {
+     onUnityReady(instance: IUnityInstance): void {
+       // Wire up your bridge service
+     }
+   }
+   ```
+
+4. Inject `UnityJSLibExportedService` wherever you need Unity events:
    ```typescript
    import { UnityJSLibExportedService } from './generated/unity-jslib-exported.service';
 
@@ -274,16 +302,74 @@ Generated TypeScript includes JSDoc comments from either:
 
 ---
 
-## Example
+## ngx-unity Library
 
-See the [example/](example/) directory for a complete working example with:
-- Unity project with all communication patterns
-- Angular app with signals and mock Unity instance
-- Mock Unity instance for development without WebGL builds
+The `ngx-unity` Angular library (in `example/angular-unity-example/projects/ngx-unity/`) provides reusable building blocks:
+
+### `NgxUnityViewport` Component
+
+A drop-in component that handles Unity WebGL loading with automatic mock fallback:
+
+```html
+<ngx-unity-viewport
+  buildPath="unity"
+  height="400px"
+  [mockFactory]="myMockFactory"
+  (instanceReady)="onReady($event)" />
+```
+
+| Input | Type | Default | Description |
+|---|---|---|---|
+| `buildPath` | `string` | `'unity'` | Path to Unity WebGL build (relative to `public/`) |
+| `height` | `string` | `'400px'` | CSS height of the canvas |
+| `mockFactory` | `() => IUnityInstance` | built-in mock | Custom mock factory for development |
+
+| Output | Type | Description |
+|---|---|---|
+| `instanceReady` | `IUnityInstance` | Emitted when Unity (or mock) is ready |
+
+### `createMockUnityInstance()`
+
+A testing utility that creates a basic mock `IUnityInstance`:
+
+```typescript
+import { createMockUnityInstance } from 'ngx-unity';
+
+const mock = createMockUnityInstance({
+  onSendMessage: (obj, method, data) => {
+    // Simulate project-specific Unity responses
+  },
+});
+```
+
+---
+
+## Project Structure
+
+```
+ngx-unity/
+├── *.cs                                  ← Unity C# source files
+├── README.md
+├── example/
+│   ├── angular-unity-example/
+│   │   ├── projects/
+│   │   │   └── ngx-unity/                ← Angular library (publishable to npm)
+│   │   │       └── src/lib/
+│   │   │           ├── components/        ← NgxUnityViewport
+│   │   │           ├── models/            ← IUnityInstance
+│   │   │           └── testing/           ← createMockUnityInstance
+│   │   └── src/                           ← Example app
+│   │       └── app/
+│   │           ├── generated/             ← Unity-generated TS files
+│   │           ├── services/              ← Project-specific bridge
+│   │           └── components/            ← Demo UI
+│   └── unity-project/                     ← Example Unity project
+```
 
 ---
 
 ## TODO
 
-- [ ] Export generated .ts files as an npm package
-- [ ] Support multiple parameters per method
+- [ ] Publish `ngx-unity` to npm
+- [ ] Distribute Unity scripts as a UPM package (git URL)
+- [ ] Auto-generate JSON serialization for complex Angular→Unity parameters

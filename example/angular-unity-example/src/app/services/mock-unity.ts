@@ -1,25 +1,19 @@
-import { IUnityInstance } from '../generated/unity-client';
+import { createMockUnityInstance, type IUnityInstance } from 'ngx-unity';
+
+const MOCK_OBJECTS = ['Cube-001', 'Sphere-002', 'Cylinder-003', 'Plane-004'];
 
 /**
- * Creates a mock Unity instance for demo purposes.
+ * Creates a project-specific mock Unity instance.
  *
- * In a real application, you would get the IUnityInstance from the Unity WebGL loader:
- *   createUnityInstance(canvas, config).then((instance) => { ... });
- *
- * This mock simulates Unity behavior by calling window callbacks
- * (the same mechanism Unity WebGL uses via BrowserInteractions.jslib).
+ * Extends the library's base mock with simulated window callbacks that
+ * mimic what the Unity WebGL build would do via BrowserInteractions.jslib.
  */
-export function createMockUnityInstance(): IUnityInstance {
-  const objects = ['Cube-001', 'Sphere-002', 'Cylinder-003', 'Plane-004'];
-
-  return {
-    SendMessage(gameObjectName: string, methodName: string, data?: unknown): void {
-      console.log(`[Unity Mock] ${gameObjectName}.${methodName}(${data ?? ''})`);
-
+export function createProjectMockUnityInstance(): IUnityInstance {
+  return createMockUnityInstance({
+    onSendMessage(_gameObjectName, methodName, data) {
       /* eslint-disable @typescript-eslint/no-explicit-any */
       const win = window as any;
 
-      // Simulate Unity responding to commands by calling window callbacks
       if (methodName === 'LoadObject') {
         setTimeout(() => {
           const cb = win['sendSelectedObjectFromUnity'] as ((id: string) => void) | undefined;
@@ -30,13 +24,12 @@ export function createMockUnityInstance(): IUnityInstance {
       if (methodName === 'ResetScene') {
         setTimeout(() => {
           const listCb = win['sendObjectsListFromUnity'] as ((ids: string) => void) | undefined;
-          listCb?.(objects.join('|'));
+          listCb?.(MOCK_OBJECTS.join('|'));
         }, 300);
         setTimeout(() => {
           const readyCb = win['sendSceneReadyFromUnity'] as (() => void) | undefined;
           readyCb?.();
         }, 500);
-        // Simulate a request-response callback (Unity asks Angular for data)
         setTimeout(() => {
           const reqCb = win['requestDataFromWebFromUnity'] as
             | ((query: string, respond: (result: string) => void) => void)
@@ -47,14 +40,5 @@ export function createMockUnityInstance(): IUnityInstance {
         }, 600);
       }
     },
-
-    SetFullscreen(value: number): void {
-      console.log(`[Unity Mock] SetFullscreen(${value})`);
-    },
-
-    Quit(): Promise<unknown> {
-      console.log('[Unity Mock] Quit');
-      return Promise.resolve();
-    },
-  };
+  });
 }
