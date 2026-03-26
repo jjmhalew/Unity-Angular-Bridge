@@ -13,12 +13,12 @@ import { IUnityInstance } from '../generated/unity-client';
 import { createMockUnityInstance } from '../services/mock-unity';
 
 /** Path where a real Unity WebGL build is expected inside the Angular public folder. */
-const UNITY_BUILD_PATH = 'unity-build';
+const UNITY_BUILD_PATH = 'unity';
 
 /**
  * Embeds the Unity WebGL player in a <canvas> element.
  *
- * If a real build exists at `public/unity-build/` it is loaded automatically.
+ * If a real build exists at `public/unity/` it is loaded automatically.
  * Otherwise a mock Unity instance is used so the rest of the demo still works.
  */
 @Component({
@@ -87,7 +87,7 @@ const UNITY_BUILD_PATH = 'unity-build';
           <p class="progress">{{ loadingProgress() }}</p>
         } @else if (useMock()) {
           <h3>Unity Viewport</h3>
-          <p>No WebGL build found at <code>public/unity-build/</code></p>
+          <p>No WebGL build found at <code>public/unity/</code></p>
           <p>Using mock instance — see the Unity project README for build instructions.</p>
         }
       </div>

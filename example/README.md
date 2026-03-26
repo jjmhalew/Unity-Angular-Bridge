@@ -47,13 +47,14 @@ Open **http://localhost:4200** in your browser.
 
 5. **Build for WebGL:**
    - File → Build Settings → WebGL → Switch Platform
-   - Player Settings → Publishing Settings → Compression Format → **Disabled**
-   - Set the build name to **`unity-build`**
+   - Player Settings → Publishing Settings → Compression Format → **Gzip** (recommended) or **Disabled** for simplest local dev
+   - WebGL Template → **Minimal** (recommended — the Angular app handles all UI chrome itself)
+   - Set the build name to **`unity`**
    - Click **Build**
 
 6. **Copy the build output** into the Angular app's public folder:
    ```bash
-   cp -r <unity-build-output>/* angular-unity-example/public/unity-build/
+   cp -r <unity-build-output>/* angular-unity-example/public/unity/
    ```
 
 7. **Start the Angular app** — the viewport will automatically load the real Unity build.

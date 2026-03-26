@@ -37,13 +37,14 @@ using the bridge attributes from the root of this repository.
 1. Go to **File → Build Settings → WebGL** and click **Switch Platform**.
 
 2. Open **Player Settings → Publishing Settings** and set:
-   - **Compression Format** → Disabled (simplest for local dev)
+   - **Compression Format** → Gzip (recommended) or Disabled for simplest local dev
+   - **WebGL Template** → Minimal (recommended — the Angular app handles all UI chrome itself)
 
-3. Click **Build** and choose an output folder.
+3. Click **Build**, naming the output folder **`unity`**.
 
 4. Copy the build output into the Angular app's public folder:
    ```bash
-   cp -r <unity-build-output>/* ../angular-unity-example/public/unity-build/
+   cp -r <unity-build-output>/* ../angular-unity-example/public/unity/
    ```
 
 5. Start the Angular app — it will automatically detect and load the Unity
