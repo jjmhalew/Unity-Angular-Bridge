@@ -11,7 +11,6 @@ namespace UnityAngularBridge
     {
         /// <summary>
         /// When true, the string parameter is split by "|" and exposed as string[] in TypeScript.
-        /// Replaces the deprecated [StringArrayAttribute].
         /// </summary>
         public bool IsStringArray { get; set; }
 

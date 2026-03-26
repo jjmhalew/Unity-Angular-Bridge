@@ -274,31 +274,6 @@ Generated TypeScript includes JSDoc comments from either:
 
 ---
 
-## Migration from v1
-
-If upgrading from the previous RxJS-based version:
-
-1. **Replace `[StringArrayAttribute]` with `[JSLibExport(IsStringArray = true)]`**
-   The old attribute still works but is deprecated.
-
-2. **Update Angular service consumption**:
-   ```typescript
-   // Before (RxJS):
-   this.jsLibService.sendSelectedObject$.pipe().subscribe(value => { ... });
-
-   // After (Signals):
-   effect(() => {
-     const value = this.jsLibService.sendSelectedObject();
-     // React to changes
-   });
-   ```
-
-3. **Remove `toSignal()` wrappers** — the service now exposes signals directly.
-
-4. **Remove `rxjs` imports** from code that only used the bridge service.
-
----
-
 ## Example
 
 See the [example/](example/) directory for a complete working example with:

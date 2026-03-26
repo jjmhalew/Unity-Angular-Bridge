@@ -161,14 +161,7 @@ namespace UnityAngularBridge
                     {
                         variable.ParameterName = dataParamName;
 
-                        // Check for StringArray: [JSLibExport(IsStringArray = true)] or legacy [StringArrayAttribute]
                         bool isStringArray = jsLibExportAttr?.IsStringArray == true;
-                        if (!isStringArray)
-                        {
-                            #pragma warning disable CS0618
-                            isStringArray = methodInfo.GetCustomAttribute<StringArrayAttribute>() != null;
-                            #pragma warning restore CS0618
-                        }
 
                         if (isStringArray)
                         {
