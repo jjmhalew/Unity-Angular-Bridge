@@ -12,8 +12,19 @@ import {
 import { IUnityInstance } from '../models/unity-instance';
 import { createMockUnityInstance } from '../testing/mock-unity';
 
+/** Track which Unity loader scripts have already been loaded (or are loading). */
+const loaderPromises = new Map<string, Promise<void>>();
+
+/** Auto-incrementing counter for generating unique canvas IDs. */
+let nextCanvasId = 0;
+
 /**
  * Embeds a Unity WebGL player in a `<canvas>` element.
+ *
+ * Each instance of this component creates its own canvas with a unique DOM ID,
+ * so multiple viewports can coexist on the same page.
+ * When two viewports share the same `buildPath`, the Unity loader script is
+ * loaded only once and reused.
  *
  * If a real Unity build exists at the given `buildPath`, it is loaded automatically.
  * Otherwise a mock Unity instance is created so the rest of the app still works.
@@ -24,6 +35,18 @@ import { createMockUnityInstance } from '../testing/mock-unity';
  *   buildPath="unity"
  *   height="500px"
  *   (instanceReady)="onUnityReady($event)" />
+ * ```
+ *
+ * @example Multiple instances
+ * ```html
+ * <ngx-unity-viewport
+ *   buildPath="unity"
+ *   height="300px"
+ *   (instanceReady)="onFirstReady($event)" />
+ * <ngx-unity-viewport
+ *   buildPath="unity"
+ *   height="300px"
+ *   (instanceReady)="onSecondReady($event)" />
  * ```
  */
 @Component({
@@ -85,7 +108,7 @@ import { createMockUnityInstance } from '../testing/mock-unity';
   `,
   template: `
     <div class="viewport">
-      <canvas #unityCanvas id="unity-canvas" [style.height]="height()"></canvas>
+      <canvas #unityCanvas [id]="canvasId" [style.height]="height()"></canvas>
 
       <div class="overlay" [class.hidden]="isLoaded()">
         @if (isLoading()) {
@@ -140,6 +163,9 @@ export class NgxUnityViewport implements OnInit, OnDestroy {
   /** Current loading progress message. */
   readonly loadingProgress = signal('Loading Unity...');
 
+  /** Unique DOM ID for this viewport's canvas element. */
+  readonly canvasId = `ngx-unity-canvas-${nextCanvasId++}`;
+
   private readonly canvasRef = viewChild.required<ElementRef<HTMLCanvasElement>>('unityCanvas');
   private unityInstance: IUnityInstance | null = null;
 
@@ -176,13 +202,18 @@ export class NgxUnityViewport implements OnInit, OnDestroy {
   private async loadRealUnity(loaderUrl: string): Promise<void> {
     this.isLoading.set(true);
 
-    await new Promise<void>((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = loaderUrl;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error('Failed to load Unity loader'));
-      document.body.appendChild(script);
-    });
+    // Reuse the existing loader promise if the same script was already requested.
+    if (!loaderPromises.has(loaderUrl)) {
+      const loaderPromise = new Promise<void>((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = loaderUrl;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load Unity loader'));
+        document.body.appendChild(script);
+      });
+      loaderPromises.set(loaderUrl, loaderPromise);
+    }
+    await loaderPromises.get(loaderUrl)!;
 
     const path = this.buildPath();
     const canvas = this.canvasRef().nativeElement;

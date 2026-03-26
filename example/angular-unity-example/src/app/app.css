@@ -20,6 +20,19 @@ app-unity-viewport {
   margin-bottom: 1.5rem;
 }
 
+.viewports {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 700px) {
+  .viewports {
+    grid-template-columns: 1fr;
+  }
+}
+
 .panels {
   display: grid;
   grid-template-columns: 1fr 1fr;

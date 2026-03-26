@@ -342,6 +342,47 @@ const mock = createMockUnityInstance({
 });
 ```
 
+### Multi-Instance Support
+
+Multiple `<ngx-unity-viewport>` components can coexist on the same page.
+Each viewport creates its own `<canvas>` with a unique DOM ID, and the Unity
+loader script is loaded only once even when viewports share the same `buildPath`.
+
+```html
+<!-- Two viewports side by side using the same Unity build -->
+<ngx-unity-viewport
+  buildPath="unity"
+  height="300px"
+  (instanceReady)="onFirstReady($event)" />
+
+<ngx-unity-viewport
+  buildPath="unity"
+  height="300px"
+  (instanceReady)="onSecondReady($event)" />
+```
+
+Each viewport emits its own `instanceReady` event with an independent
+`IUnityInstance`, so you can wire each one to a separate bridge service or
+handle them individually:
+
+```typescript
+instances: IUnityInstance[] = [];
+
+onFirstReady(instance: IUnityInstance): void {
+  this.instances[0] = instance;
+}
+
+onSecondReady(instance: IUnityInstance): void {
+  this.instances[1] = instance;
+}
+```
+
+> **Note:** The auto-generated `UnityJSLibExportedService` registers global
+> `window` callbacks, so Unity → Angular signals (e.g. `sendSelectedObject`)
+> reflect the most recent event from *any* instance. If you need per-instance
+> isolation for Unity → Angular events, maintain separate state in your
+> bridge service keyed by each `IUnityInstance`.
+
 ---
 
 ## Project Structure
