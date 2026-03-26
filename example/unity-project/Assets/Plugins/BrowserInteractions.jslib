@@ -1,14 +1,20 @@
 mergeInto(LibraryManager.library, {
   SendSelectedObject: function (objectId, size) {
-    window.sendSelectedObjectFromUnity(UTF8ToString(objectId));
+    if (window.sendSelectedObjectFromUnity) {
+      window.sendSelectedObjectFromUnity(UTF8ToString(objectId));
+    }
   },
   
   SendSceneReady: function () {
-    window.sendSceneReadyFromUnity();
+    if (window.sendSceneReadyFromUnity) {
+      window.sendSceneReadyFromUnity();
+    }
   },
   
   SendObjectsList: function (objectIds, size) {
-    window.sendObjectsListFromUnity(UTF8ToString(objectIds));
+    if (window.sendObjectsListFromUnity) {
+      window.sendObjectsListFromUnity(UTF8ToString(objectIds));
+    }
   },
   
 });
