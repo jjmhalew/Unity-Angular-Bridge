@@ -1,6 +1,6 @@
 using System;
 
-namespace UnityAngularBridge.SwaggerAttribute
+namespace UnityAngularBridge
 {
     /// <summary>
     /// This attribute will expose marked Method for Angular as a type of SwaggerClient.
@@ -14,6 +14,11 @@ namespace UnityAngularBridge.SwaggerAttribute
         /// GameObject name exposed method is part of.
         /// </summary>
         public string GameObjectName { get; } = DefaultGameObjectName;
+
+        /// <summary>
+        /// Override documentation for the generated TypeScript method. If empty, XML doc comments are used.
+        /// </summary>
+        public string Documentation { get; set; } = string.Empty;
 
         /// <summary>
         /// Default constructor.

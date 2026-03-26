@@ -1,4 +1,4 @@
-namespace Assets.UnityAngularBridge.SwaggerAttribute.Models
+namespace UnityAngularBridge.Models
 {
     /// <summary>
     /// Used in <seealso cref="JSLibExport"/> to set Unity methods to JS functions.
@@ -6,19 +6,19 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute.Models
     public class JSLibVariable
     {
         /// <summary>
-        /// Variable name.
+        /// Method name.
         /// </summary>
-        public string MethodName { get; set; }
+        public string MethodName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Return type.
+        /// Return type for signal-based methods.
         /// </summary>
         public ReturnType ReturnType { get; set; }
 
         /// <summary>
-        /// Default value.
+        /// Default value for the signal.
         /// </summary>
-        public string DefaultValue { get; set; }
+        public string DefaultValue { get; set; } = string.Empty;
 
         /// <summary>
         /// First parameter name (if has any).
@@ -27,9 +27,25 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute.Models
         public string ParameterName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Method documentation.
+        /// Method documentation from XML docs or attribute.
         /// </summary>
-        public string MethodDocumentation { get; set; }
+        public string MethodDocumentation { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Category for organizing methods in generated TypeScript.
+        /// </summary>
+        public string Category { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Callback type for this method.
+        /// </summary>
+        public CallbackType CallbackType { get; set; } = CallbackType.None;
+
+        /// <summary>
+        /// Whether the callback Action has a string parameter (Action&lt;string&gt; vs Action).
+        /// Only relevant when CallbackType is not None.
+        /// </summary>
+        public bool CallbackHasStringParam { get; set; }
     }
 
     /// <summary>
@@ -51,5 +67,26 @@ namespace Assets.UnityAngularBridge.SwaggerAttribute.Models
         /// string[].
         /// </summary>
         StringArray,
+    }
+
+    /// <summary>
+    /// Callback type for method generation.
+    /// </summary>
+    public enum CallbackType
+    {
+        /// <summary>
+        /// No callback — regular signal-based method.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// C# calls JS with a callback that JS invokes to respond.
+        /// </summary>
+        RequestResponse,
+
+        /// <summary>
+        /// C# registers a callback that Angular can invoke later.
+        /// </summary>
+        Registration,
     }
 }

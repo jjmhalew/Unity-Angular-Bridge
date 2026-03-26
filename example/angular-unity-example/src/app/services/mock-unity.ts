@@ -36,6 +36,15 @@ export function createMockUnityInstance(): IUnityInstance {
           const readyCb = win['sendSceneReadyFromUnity'] as (() => void) | undefined;
           readyCb?.();
         }, 500);
+        // Simulate a request-response callback (Unity asks Angular for data)
+        setTimeout(() => {
+          const reqCb = win['requestDataFromWebFromUnity'] as
+            | ((query: string, respond: (result: string) => void) => void)
+            | undefined;
+          reqCb?.('scene-reset', (result: string) => {
+            console.log(`[Unity Mock] Received callback response: ${result}`);
+          });
+        }, 600);
       }
     },
 

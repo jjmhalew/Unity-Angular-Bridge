@@ -1,16 +1,19 @@
-using Assets.UnityAngularBridge.SwaggerAttribute;
+using System;
 using System.Runtime.InteropServices;
-using UnityAngularBridge.SwaggerAttribute;
+using AOT;
+using UnityAngularBridge;
 using UnityEngine;
 
 /// <summary>
-/// Example MonoBehaviour that demonstrates both communication patterns
+/// Example MonoBehaviour that demonstrates all communication patterns
 /// of the Unity-Angular-Bridge.
 ///
 /// 1. Angular → Unity:  Methods marked with [AngularExposed] can be called
 ///    from Angular via the auto-generated UnityClient.ts.
 /// 2. Unity → Angular:  Methods marked with [DllImport("__Internal")] push
 ///    data to Angular via the auto-generated UnityJSLibExportedService.
+/// 3. Callbacks:         Request-response and event registration patterns
+///    for bidirectional async communication.
 /// </summary>
 public class SceneManager : MonoBehaviour
 {
@@ -23,20 +26,52 @@ public class SceneManager : MonoBehaviour
     /// Sends the currently selected object ID to Angular.
     /// </summary>
     [DllImport("__Internal")]
+    [JSLibExport(Category = "Selection")]
     private static extern void SendSelectedObject(string objectId);
 
     /// <summary>
     /// Notifies Angular that the scene has finished loading.
     /// </summary>
     [DllImport("__Internal")]
+    [JSLibExport(Category = "Lifecycle")]
     private static extern void SendSceneReady();
 
     /// <summary>
     /// Sends a pipe-delimited list of object IDs to Angular (split into string[]).
     /// </summary>
     [DllImport("__Internal")]
-    [StringArrayAttribute]
+    [JSLibExport(IsStringArray = true, Category = "Objects")]
     private static extern void SendObjectsList(string objectIds);
+
+    // ──────────────────────────────────────────────────────────────────
+    //  Callbacks  (Request-Response & Event Registration)
+    // ──────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Requests data from the web page. Angular processes the query and responds via callback.
+    /// </summary>
+    [DllImport("__Internal")]
+    [JSLibExport(Category = "Data")]
+    private static extern void RequestDataFromWeb(string query, Action<string> onResult);
+
+    /// <summary>
+    /// Registers a callback that Angular can invoke to notify Unity of navigation changes.
+    /// </summary>
+    [DllImport("__Internal")]
+    [JSLibExport(IsCallbackRegistration = true, Category = "Navigation")]
+    private static extern void RegisterOnNavigationChanged(Action<string> handler);
+
+    [MonoPInvokeCallback(typeof(Action<string>))]
+    private static void OnDataReceived(string data)
+    {
+        Debug.Log($"[SceneManager] Data received from web: {data}");
+    }
+
+    [MonoPInvokeCallback(typeof(Action<string>))]
+    private static void OnNavigationChanged(string route)
+    {
+        Debug.Log($"[SceneManager] Navigation changed to: {route}");
+    }
 
     // ──────────────────────────────────────────────────────────────────
     //  Scene objects
@@ -141,6 +176,7 @@ public class SceneManager : MonoBehaviour
 #if PLATFORM_WEBGL && !UNITY_EDITOR
         SendObjectsList(string.Join("|", objectIds));
         SendSceneReady();
+        RequestDataFromWeb("scene-reset", OnDataReceived);
 #endif
     }
 
@@ -150,6 +186,7 @@ public class SceneManager : MonoBehaviour
 
 #if PLATFORM_WEBGL && !UNITY_EDITOR
         SendSceneReady();
+        RegisterOnNavigationChanged(OnNavigationChanged);
 #endif
     }
 

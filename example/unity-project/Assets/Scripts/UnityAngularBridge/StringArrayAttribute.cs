@@ -1,18 +1,13 @@
 using System;
 
-namespace Assets.UnityAngularBridge.SwaggerAttribute
+namespace UnityAngularBridge
 {
     /// <summary>
     /// Converts string parameter to array in JSLibExport.
     /// </summary>
+    [Obsolete("Use [JSLibExport(IsStringArray = true)] instead.")]
     [AttributeUsage(AttributeTargets.Method)]
     public class StringArrayAttribute : Attribute
     {
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        public StringArrayAttribute()
-        {
-        }
     }
 }
