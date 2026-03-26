@@ -162,6 +162,19 @@ public class SceneManager : MonoBehaviour
         var go = GameObject.CreatePrimitive(type);
         go.name = id;
         go.transform.position = position;
+
+        // Remove collider — physics may be stripped in WebGL builds
+        var col = go.GetComponent<Collider>();
+        if (col != null) Destroy(col);
+
+        // Use a built-in unlit shader so it doesn't go pink in WebGL
+        var renderer = go.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.material = new Material(Shader.Find("UI/Default"));
+            renderer.material.color = Color.white;
+        }
+
         _objects[id] = go;
     }
 
