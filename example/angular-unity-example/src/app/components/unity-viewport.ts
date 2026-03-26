@@ -175,6 +175,7 @@ export class UnityViewport implements OnInit, OnDestroy {
       companyName: 'UnityAngularBridge',
       productName: 'Example',
       productVersion: '1.0.0',
+      autoSyncPersistentDataPath: true,
     };
 
     try {
