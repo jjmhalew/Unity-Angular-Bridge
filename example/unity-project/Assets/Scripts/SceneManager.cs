@@ -1,6 +1,7 @@
+using Assets.UnityAngularBridge.SwaggerAttribute;
 using System.Runtime.InteropServices;
-using UnityEngine;
 using UnityAngularBridge.SwaggerAttribute;
+using UnityEngine;
 
 /// <summary>
 /// Example MonoBehaviour that demonstrates both communication patterns
