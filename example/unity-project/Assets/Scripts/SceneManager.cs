@@ -39,6 +39,16 @@ public class SceneManager : MonoBehaviour
     private static extern void SendObjectsList(string objectIds);
 
     // ──────────────────────────────────────────────────────────────────
+    //  Scene objects
+    // ──────────────────────────────────────────────────────────────────
+
+    private readonly System.Collections.Generic.Dictionary<string, GameObject> _objects
+        = new System.Collections.Generic.Dictionary<string, GameObject>();
+
+    private string _selectedObjectId;
+    private bool _visible = true;
+
+    // ──────────────────────────────────────────────────────────────────
     //  Angular → Unity  (AngularExposed)
     //  These generate UnityClient.ts
     // ──────────────────────────────────────────────────────────────────
@@ -51,7 +61,19 @@ public class SceneManager : MonoBehaviour
     {
         Debug.Log($"[SceneManager] LoadObject({objectId})");
 
-        // Example: find and highlight the object, then notify Angular
+        // Deselect previous
+        if (_selectedObjectId != null && _objects.ContainsKey(_selectedObjectId))
+        {
+            HighlightObject(_objects[_selectedObjectId], false);
+        }
+
+        // Select new
+        _selectedObjectId = objectId;
+        if (_objects.ContainsKey(objectId))
+        {
+            HighlightObject(_objects[objectId], true);
+        }
+
 #if PLATFORM_WEBGL && !UNITY_EDITOR
         SendSelectedObject(objectId);
 #endif
@@ -65,10 +87,15 @@ public class SceneManager : MonoBehaviour
     {
         Debug.Log($"[SceneManager] SetColor({colorHex})");
 
-        // Example: parse hex color and apply to selected object's material
-        if (ColorUtility.TryParseHtmlString(colorHex, out Color color))
+        if (_selectedObjectId != null
+            && _objects.ContainsKey(_selectedObjectId)
+            && ColorUtility.TryParseHtmlString(colorHex, out Color color))
         {
-            // Apply to selected object...
+            var renderer = _objects[_selectedObjectId].GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                renderer.material.color = color;
+            }
         }
     }
 
@@ -79,6 +106,11 @@ public class SceneManager : MonoBehaviour
     public void ToggleVisibility()
     {
         Debug.Log("[SceneManager] ToggleVisibility()");
+        _visible = !_visible;
+        foreach (var obj in _objects.Values)
+        {
+            obj.SetActive(_visible);
+        }
     }
 
     /// <summary>
@@ -89,7 +121,21 @@ public class SceneManager : MonoBehaviour
     {
         Debug.Log("[SceneManager] ResetScene()");
 
-        // Example: gather all object IDs and send to Angular
+        // Destroy existing objects
+        foreach (var obj in _objects.Values)
+        {
+            Destroy(obj);
+        }
+        _objects.Clear();
+        _selectedObjectId = null;
+        _visible = true;
+
+        // Spawn the demo primitives in front of the camera
+        SpawnObject("Cube-001",     PrimitiveType.Cube,     new Vector3(-3f, 1f, 0f));
+        SpawnObject("Sphere-002",   PrimitiveType.Sphere,   new Vector3(-1f, 1f, 0f));
+        SpawnObject("Cylinder-003", PrimitiveType.Cylinder,  new Vector3(1f, 1f, 0f));
+        SpawnObject("Plane-004",    PrimitiveType.Quad,      new Vector3(3f, 1f, 0f));
+
         string[] objectIds = { "Cube-001", "Sphere-002", "Cylinder-003", "Plane-004" };
 
 #if PLATFORM_WEBGL && !UNITY_EDITOR
@@ -100,9 +146,29 @@ public class SceneManager : MonoBehaviour
 
     private void Start()
     {
-        // Notify Angular that the Unity scene is ready
+        ResetScene();
+
 #if PLATFORM_WEBGL && !UNITY_EDITOR
         SendSceneReady();
 #endif
+    }
+
+    // ──────────────────────────────────────────────────────────────────
+    //  Helpers
+    // ──────────────────────────────────────────────────────────────────
+
+    private void SpawnObject(string id, PrimitiveType type, Vector3 position)
+    {
+        var go = GameObject.CreatePrimitive(type);
+        go.name = id;
+        go.transform.position = position;
+        _objects[id] = go;
+    }
+
+    private void HighlightObject(GameObject go, bool selected)
+    {
+        var renderer = go.GetComponent<Renderer>();
+        if (renderer == null) return;
+        renderer.material.color = selected ? Color.yellow : Color.white;
     }
 }
