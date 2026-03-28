@@ -9,6 +9,9 @@ This project has two parts:
 | **`ngx-unity`** | Angular library (npm) | Reusable viewport component, `IUnityInstance` type, mock utilities |
 | **Unity C# scripts** | Copy to `Assets/` | Attributes, TypeScript code generators, editor settings |
 
+## Demo
+https://ngx-unity.web.app/
+
 ## Features
 
 - **Angular → Unity**: Call Unity methods from Angular via auto-generated `UnityClient.ts`
