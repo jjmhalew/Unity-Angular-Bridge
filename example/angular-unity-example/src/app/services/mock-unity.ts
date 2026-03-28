@@ -6,7 +6,7 @@ const MOCK_OBJECTS = ['Cube-001', 'Sphere-002', 'Cylinder-003', 'Plane-004'];
  * Creates a project-specific mock Unity instance.
  *
  * Extends the library's base mock with simulated window callbacks that
- * mimic what the Unity WebGL build would do via BrowserInteractions.jslib.
+ * mimic what the Unity WebGL/WebGPU build would do via BrowserInteractions.jslib.
  */
 export function createProjectMockUnityInstance(): IUnityInstance {
   return createMockUnityInstance({

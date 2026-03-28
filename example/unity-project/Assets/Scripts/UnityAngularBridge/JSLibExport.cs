@@ -16,7 +16,7 @@ namespace UnityAngularBridge
 {
     /// <summary>
     /// Scans the assembly for [DllImport("__Internal")] methods and generates:
-    /// 1. BrowserInteractions.jslib — JavaScript bridge functions for Unity WebGL
+    /// 1. BrowserInteractions.jslib — JavaScript bridge functions for Unity WebGL/WebGPU
     /// 2. unity-jslib-exported.service.ts — Angular service with signals and callback handlers
     ///
     /// Supports:

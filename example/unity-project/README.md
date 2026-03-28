@@ -32,9 +32,10 @@ using the bridge attributes from the root of this repository.
    - `Assets/Plugins/BrowserInteractions.jslib`
    - `Assets/Plugins/unity-jslib-exported.service.ts`
 
-## Building for WebGL
+## Building for WebGL / WebGPU
 
 1. Go to **File → Build Settings → WebGL** and click **Switch Platform**.
+   (Unity uses the "WebGL" platform for both WebGL and WebGPU builds.)
 
 2. Open **Player Settings → Publishing Settings** and set:
    - **Compression Format** → Gzip (recommended) or Disabled for simplest local dev
@@ -48,7 +49,7 @@ using the bridge attributes from the root of this repository.
    ```
 
 5. Start the Angular app — it will automatically detect and load the Unity
-   WebGL build, showing the real Unity viewport alongside the Angular controls.
+   WebGL/WebGPU build, showing the real Unity viewport alongside the Angular controls.
 
 ## What the SceneManager Script Does
 

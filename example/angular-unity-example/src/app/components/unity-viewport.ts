@@ -23,7 +23,7 @@ import { createProjectMockUnityInstance } from '../services/mock-unity';
   `,
 })
 export class UnityViewport {
-  /** Path to the Unity WebGL build folder. */
+  /** Path to the Unity WebGL/WebGPU build folder. */
   readonly buildPath = input('unity');
 
   /** CSS height of the canvas element. */

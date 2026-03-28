@@ -10,7 +10,7 @@ export interface MockUnityOptions {
 }
 
 /**
- * Creates a basic mock `IUnityInstance` for development without a Unity WebGL build.
+ * Creates a basic mock `IUnityInstance` for development without a Unity WebGL/WebGPU build.
  *
  * By default, it logs all `SendMessage` calls to the console.
  * Pass `options.onSendMessage` to add project-specific behavior (e.g., simulating

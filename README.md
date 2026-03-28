@@ -1,6 +1,6 @@
 # ngx-unity
 
-A type-safe bridge for bidirectional communication between Unity WebGL and Angular.
+A type-safe bridge for bidirectional communication between Unity WebGL/WebGPU and Angular.
 
 This project has two parts:
 
@@ -20,7 +20,7 @@ https://ngx-unity.web.app/
 - **TSDoc Generation**: C# XML documentation automatically appears in generated TypeScript
 - **Custom Attributes**: `[AngularExposed]` and `[JSLibExport]` for clean, declarative setup
 - **Configurable Output**: Control where generated files are placed via Editor settings
-- **`<ngx-unity-viewport>`**: Ready-to-use component that loads Unity WebGL with automatic mock fallback
+- **`<ngx-unity-viewport>`**: Ready-to-use component that loads Unity WebGL/WebGPU with automatic mock fallback
 
 ## Requirements
 
@@ -311,7 +311,7 @@ The `ngx-unity` Angular library (in `example/angular-unity-example/projects/ngx-
 
 ### `NgxUnityViewport` Component
 
-A drop-in component that handles Unity WebGL loading with automatic mock fallback:
+A drop-in component that handles Unity WebGL/WebGPU loading with automatic mock fallback:
 
 ```html
 <ngx-unity-viewport
@@ -323,7 +323,7 @@ A drop-in component that handles Unity WebGL loading with automatic mock fallbac
 
 | Input | Type | Default | Description |
 |---|---|---|---|
-| `buildPath` | `string` | `'unity'` | Path to Unity WebGL build (relative to `public/`) |
+| `buildPath` | `string` | `'unity'` | Path to Unity WebGL/WebGPU build (relative to `public/`) |
 | `height` | `string` | `'400px'` | CSS height of the canvas |
 | `mockFactory` | `() => IUnityInstance` | built-in mock | Custom mock factory for development |
 

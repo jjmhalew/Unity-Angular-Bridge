@@ -5,7 +5,7 @@ tools in an Angular 21 application with **OnPush** change detection and
 **Signals / Computed**.
 
 It includes:
-- **`angular-unity-example/`** — Angular 21 app with a Unity WebGL viewport
+- **`angular-unity-example/`** — Angular 21 app with a Unity WebGL/WebGPU viewport
 - **`unity-project/`** — Unity project with a `SceneManager` MonoBehaviour using the bridge
 
 ## Quick Start
@@ -18,12 +18,12 @@ npm start
 
 Open **http://localhost:4200** in your browser.
 
-> The app automatically detects whether a real Unity WebGL build is available.
+> The app automatically detects whether a real Unity WebGL/WebGPU build is available.
 > If not, a mock Unity instance is used so the demo still works.
 
 ---
 
-## Adding a Real Unity WebGL Build
+## Adding a Real Unity Build
 
 1. **Open Unity Hub** and create a new project (Unity 2022.3 LTS or later, 3D template).
 
@@ -80,7 +80,7 @@ example/
         │   ├── unity-bridge.service.ts  ← Wraps generated code with Signals/Computed
         │   └── mock-unity.ts            ← Mock IUnityInstance (fallback when no build)
         ├── components/
-        │   ├── unity-viewport.ts        ← Unity WebGL canvas + loader
+        │   ├── unity-viewport.ts        ← Unity WebGL/WebGPU canvas + loader
         │   ├── unity-controls.ts        ← Angular → Unity: sends commands
         │   └── object-list.ts           ← Unity → Angular: displays events
         ├── app.ts                       ← Root component (OnPush)

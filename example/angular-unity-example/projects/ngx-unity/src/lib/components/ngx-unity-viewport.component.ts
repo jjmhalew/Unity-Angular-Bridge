@@ -19,7 +19,7 @@ const loaderPromises = new Map<string, Promise<void>>();
 let nextCanvasId = 0;
 
 /**
- * Embeds a Unity WebGL player in a `<canvas>` element.
+ * Embeds a Unity WebGL/WebGPU player in a `<canvas>` element.
  *
  * Each instance of this component creates its own canvas with a unique DOM ID,
  * so multiple viewports can coexist on the same page.
@@ -104,6 +104,7 @@ let nextCanvasId = 0;
     }
     .badge.mock { background: #fff3e0; color: #e65100; }
     .badge.webgl { background: #e8f5e9; color: #2e7d32; }
+    .badge.webgpu { background: #e0f2f1; color: #00695c; }
     .progress { color: #1976d2; }
   `,
   template: `
@@ -115,7 +116,7 @@ let nextCanvasId = 0;
           <p class="progress">{{ loadingProgress() }}</p>
         } @else if (useMock()) {
           <h3>Unity Viewport</h3>
-          <p>No WebGL build found at <code>public/{{ buildPath() }}/</code></p>
+          <p>No Unity build found at <code>public/{{ buildPath() }}/</code></p>
           <p>Using mock instance for development.</p>
         }
       </div>
@@ -125,6 +126,8 @@ let nextCanvasId = 0;
       <span>
         @if (useMock()) {
           <span class="badge mock">Mock</span>
+        } @else if (renderingBackend() === 'webgpu') {
+          <span class="badge webgpu">WebGPU</span>
         } @else {
           <span class="badge webgl">WebGL</span>
         }
@@ -135,7 +138,7 @@ let nextCanvasId = 0;
   `,
 })
 export class NgxUnityViewport implements OnInit, OnDestroy {
-  /** Path to the Unity WebGL build folder, relative to Angular's public/assets directory. */
+  /** Path to the Unity WebGL/WebGPU build folder, relative to Angular's public/assets directory. */
   readonly buildPath = input('unity');
 
   /** CSS height of the canvas element. */
@@ -157,8 +160,11 @@ export class NgxUnityViewport implements OnInit, OnDestroy {
   /** Whether a Unity instance (real or mock) has been created. */
   readonly isLoaded = signal(false);
 
-  /** Whether the instance is a mock (no real WebGL build found). */
+  /** Whether the instance is a mock (no real Unity build found). */
   readonly useMock = signal(false);
+
+  /** Detected rendering backend after Unity loads. */
+  readonly renderingBackend = signal<'webgl' | 'webgpu'>('webgl');
 
   /** Current loading progress message. */
   readonly loadingProgress = signal('Loading Unity...');
@@ -246,10 +252,11 @@ export class NgxUnityViewport implements OnInit, OnDestroy {
       );
 
       this.unityInstance = instance;
+      this.renderingBackend.set(this.detectRenderingBackend(canvas));
       this.isLoaded.set(true);
       this.instanceReady.emit(instance);
     } catch (err) {
-      console.error('Unity WebGL failed to load, falling back to mock:', err);
+      console.error('Unity failed to load, falling back to mock:', err);
       this.useMock.set(true);
       const factory = this.mockFactory();
       const mock = factory ? factory() : createMockUnityInstance();
@@ -259,6 +266,16 @@ export class NgxUnityViewport implements OnInit, OnDestroy {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  /** Detect whether Unity is using WebGL or WebGPU by probing the canvas context. */
+  private detectRenderingBackend(canvas: HTMLCanvasElement): 'webgl' | 'webgpu' {
+    try {
+      if (canvas.getContext('webgl2') || canvas.getContext('webgl')) {
+        return 'webgl';
+      }
+    } catch { /* context not available */ }
+    return 'webgpu';
   }
 
   /** Detect which compression extension a file has (.br, .gz, or none). */

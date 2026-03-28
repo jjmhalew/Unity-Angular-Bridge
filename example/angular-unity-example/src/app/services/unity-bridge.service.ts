@@ -37,7 +37,7 @@ export class UnityBridgeService {
     });
   }
 
-  /** Set the Unity WebGL instance (called after Unity finishes loading). */
+  /** Set the Unity instance (called after Unity finishes loading). */
   setUnityInstance(instance: IUnityInstance): void {
     this._unityInstance.set(instance);
   }

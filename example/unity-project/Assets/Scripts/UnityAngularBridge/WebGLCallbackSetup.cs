@@ -5,7 +5,7 @@ namespace UnityAngularBridge
 {
     /// <summary>
     /// Editor utility to configure Emscripten args required for callback support.
-    /// Unity WebGL builds need ALLOW_TABLE_GROWTH to support runtime callback registration.
+    /// Unity WebGL/WebGPU builds need ALLOW_TABLE_GROWTH to support runtime callback registration.
     /// </summary>
     public static class WebGLCallbackSetup
     {

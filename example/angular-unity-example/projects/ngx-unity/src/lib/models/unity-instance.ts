@@ -1,7 +1,7 @@
 /**
- * Represents a Unity WebGL instance created by `createUnityInstance()`.
+ * Represents a Unity WebGL/WebGPU instance created by `createUnityInstance()`.
  *
- * This interface matches the object returned by the Unity WebGL loader.
+ * This interface matches the object returned by the Unity WebGL/WebGPU loader.
  * It is used by both real Unity builds and mock instances for development.
  */
 export interface IUnityInstance {
