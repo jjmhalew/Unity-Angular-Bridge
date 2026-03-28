@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { NgxUnityViewport, type IUnityInstance } from 'ngx-unity';
 import { UnityBridgeService } from '../services/unity-bridge.service';
 import { createProjectMockUnityInstance } from '../services/mock-unity';
@@ -6,6 +6,9 @@ import { createProjectMockUnityInstance } from '../services/mock-unity';
 /**
  * Wraps the library's `<ngx-unity-viewport>` with project-specific wiring:
  * connects the Unity instance to the bridge service and provides the project mock.
+ *
+ * Accepts `buildPath` and `height` inputs so the same component can be reused
+ * for multiple viewports on the same page.
  */
 @Component({
   selector: 'app-unity-viewport',
@@ -13,13 +16,19 @@ import { createProjectMockUnityInstance } from '../services/mock-unity';
   imports: [NgxUnityViewport],
   template: `
     <ngx-unity-viewport
-      buildPath="unity"
-      height="400px"
+      [buildPath]="buildPath()"
+      [height]="height()"
       [mockFactory]="mockFactory"
       (instanceReady)="onInstanceReady($event)" />
   `,
 })
 export class UnityViewport {
+  /** Path to the Unity WebGL build folder. */
+  readonly buildPath = input('unity');
+
+  /** CSS height of the canvas element. */
+  readonly height = input('400px');
+
   private readonly bridge = inject(UnityBridgeService);
 
   protected readonly mockFactory = () => createProjectMockUnityInstance();
