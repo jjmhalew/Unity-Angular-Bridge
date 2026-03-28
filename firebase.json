@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "public": "dist/angular-unity-example/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
