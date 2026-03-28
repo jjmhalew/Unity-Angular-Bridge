@@ -1,6 +1,29 @@
 {
   "name": "ngx-unity",
   "version": "0.0.1",
+  "description": "Angular library for embedding and communicating with Unity WebGL/WebGPU builds",
+  "keywords": [
+    "angular",
+    "unity",
+    "webgl",
+    "webgpu",
+    "unity3d",
+    "game",
+    "3d",
+    "signals",
+    "zoneless",
+    "standalone",
+    "component",
+    "bridge",
+    "interop",
+    "jslib",
+    "webassembly",
+    "wasm",
+    "real-time",
+    "rendering",
+    "interactive",
+    "ngx"
+  ],
   "peerDependencies": {
     "@angular/common": "^21.2.0",
     "@angular/core": "^21.2.0"
