@@ -1,3 +1,5 @@
+<img width="170" height="180" alt="ngx-unity logo" src="https://github.com/user-attachments/assets/2eb16db5-f296-49b0-a0af-a2e43a7d9ac0" />
+
 # ngx-unity
 
 A type-safe bridge for bidirectional communication between Unity WebGL/WebGPU and Angular.
